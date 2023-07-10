@@ -18,12 +18,12 @@
 	IBOutlet UILabel *serialLabel;
 	IBOutlet UILabel *leftEncoderLabel;
 	IBOutlet UILabel *rightEncoderLabel;
+    IBOutlet UILabel *classificationLabel;
 	IBOutlet UIButton *driveForwardButton;
 	IBOutlet UIButton *driveBackwardButton;
 	IBOutlet UIButton *driveLeftButton;
 	IBOutlet UIButton *driveRightButton;
     IBOutlet UIImageView *imageView;
-    IBOutlet UIImageView *cameraView;
 }
 
 @end

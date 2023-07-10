@@ -10,14 +10,24 @@
 #import <DoubleControlSDK/DoubleControlSDK.h>
 #import <AVFoundation/AVFoundation.h>
 #import <CoreMedia/CoreMedia.h>
+#import <CoreML/CoreML.h>
+#import <CoreGraphics/CoreGraphics.h>
+#import <Vision/Vision.h>
+
+#import "MobileNetV2FP16.h"
 
 @interface DRViewController () <DRDoubleDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
+
 @property (nonatomic, strong) DRDouble *theDouble;
-// Instance variables for filtered encoder values
 @property (nonatomic, assign) CGFloat filteredLeftEncoder;
 @property (nonatomic, assign) CGFloat filteredRightEncoder;
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
+@property (nonatomic, strong) VNCoreMLRequest *objectDetectionRequest;
+@property (nonatomic, strong) VNImageRequestHandler *objectDetectionRequestHandler;
+@property (nonatomic, assign) NSTimeInterval lastClassificationTimestamp;
+@property (nonatomic, strong) MobileNetV2FP16 *model;
+
 @end
 
 @implementation DRViewController
@@ -29,54 +39,87 @@ static const CGFloat kInitialEncoderValue = 0.0;
 bool autostatus = NO;
 
 - (void)viewDidLoad {
-	[super viewDidLoad];
+    [super viewDidLoad];
     self.theDouble = [DRDouble sharedDouble];
     self.theDouble.delegate = self;
-    [self startCameraCapture];
     
+    self.lastClassificationTimestamp = 0;
+    
+    self.model = [[MobileNetV2FP16 alloc] init];
+
+    VNCoreMLModel *coreMLModel = [VNCoreMLModel modelForMLModel:self.model.model error:nil];
+
+    VNCoreMLRequest *objectDetectionRequest = [[VNCoreMLRequest alloc] initWithModel:coreMLModel completionHandler:^(VNRequest *request, NSError *error) {
+        [self handleObjectDetectionResults:request.results];
+    }];
+    objectDetectionRequest.imageCropAndScaleOption = VNImageCropAndScaleOptionCenterCrop;
+    
+    // Create a new CVPixelBuffer
+    CVPixelBufferRef pixelBuffer;
+    
+    // Create the pixel buffer pool attributes
+     NSDictionary *pixelBufferPoolAttributes = @{
+         (NSString *)kCVPixelBufferPoolMinimumBufferCountKey: @(1)
+     };
+    
+    // Create the pixel buffer pool
+    CVPixelBufferPoolRef pixelBufferPool;
+    CVPixelBufferPoolCreate(kCFAllocatorDefault, NULL, (__bridge CFDictionaryRef)pixelBufferPoolAttributes, &pixelBufferPool);
+
+    // Create the pixel buffer from the pixel buffer pool
+    CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pixelBufferPool, &pixelBuffer);
+
+    // Release the pixel buffer pool
+    CVPixelBufferPoolRelease(pixelBufferPool);
+
+    // Set the pixel buffer to the object detection request handler
+    self.objectDetectionRequestHandler = [[VNImageRequestHandler alloc] initWithCVPixelBuffer:pixelBuffer options:@{}];
+
+    self.objectDetectionRequest = objectDetectionRequest;
+
     self.filteredLeftEncoder = kInitialEncoderValue;
     self.filteredRightEncoder = kInitialEncoderValue;
-	NSLog(@"SDK Version: %@", kDoubleBasicSDKVersion);
+    NSLog(@"SDK Version: %@", kDoubleBasicSDKVersion);
+    NSLog(@"Starting camera capture...");
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self startCameraCapture];
 }
 
 - (void)startCameraCapture {
-    // Create an AVCaptureSession
     self.captureSession = [[AVCaptureSession alloc] init];
-    
-    // Configure the session for high-quality video output
     self.captureSession.sessionPreset = AVCaptureSessionPresetHigh;
-    
-    // Find the appropriate AVCaptureDevice for video
+
     AVCaptureDeviceDiscoverySession *discoverySession = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera]
                                                                                                               mediaType:AVMediaTypeVideo
                                                                                                                position:AVCaptureDevicePositionFront];
     NSArray *devices = discoverySession.devices;
-    
+
     if (devices.count > 0) {
         AVCaptureDevice *videoDevice = devices.firstObject;
-        
         NSError *error;
         AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
-        
+
         if (!error) {
             if ([self.captureSession canAddInput:videoInput]) {
-                // Add the video input to the session
                 [self.captureSession addInput:videoInput];
-                
-                // Create an AVCaptureVideoDataOutput to receive video frames
+
                 AVCaptureVideoDataOutput *videoOutput = [[AVCaptureVideoDataOutput alloc] init];
                 [videoOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
-                
+
                 if ([self.captureSession canAddOutput:videoOutput]) {
-                    // Add the video output to the session
                     [self.captureSession addOutput:videoOutput];
-                    
-                    // Create a UIImageView to display the camera feed
-                    cameraView = [[UIImageView alloc] initWithFrame:imageView.bounds];
-                    cameraView.contentMode = UIViewContentModeScaleAspectFit;
-                    [imageView addSubview:cameraView]; // Replace "imageView" with the actual IBOutlet name of your image view
-                    
-                    // Start the capture session
+                    NSLog(@"Camera capture started successfully.");
+
+                    self.previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.captureSession];
+                    self.previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+                    self.previewLayer.frame = imageView.bounds;
+
+                    CALayer *imageViewLayer = imageView.layer;
+                    [imageViewLayer insertSublayer:self.previewLayer atIndex:0];
+
                     [self.captureSession startRunning];
                 }
             }
@@ -88,82 +131,69 @@ bool autostatus = NO;
     }
 }
 
-//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-//	return UIInterfaceOrientationIsPortrait(toInterfaceOrientation);
-//}
-
 - (BOOL)shouldAutorotate {
-    return YES;  // Return YES if you want the view controller to support all interface orientations.
+    return YES;
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;  // Adjust the return value to support the desired interface orientations.
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 #pragma mark - Actions
 
 - (IBAction)poleUp:(id)sender {
-	[[DRDouble sharedDouble] poleUp];
+    [[DRDouble sharedDouble] poleUp];
 }
 
 - (IBAction)poleStop:(id)sender {
-	[[DRDouble sharedDouble] poleStop];
+    [[DRDouble sharedDouble] poleStop];
 }
 
 - (IBAction)poleDown:(id)sender {
-	[[DRDouble sharedDouble] poleDown];
+    [[DRDouble sharedDouble] poleDown];
 }
 
 - (IBAction)kickstandsRetract:(id)sender {
-	[[DRDouble sharedDouble] retractKickstands];
+    [[DRDouble sharedDouble] retractKickstands];
 }
 
 - (IBAction)kickstandsDeploy:(id)sender {
-	[[DRDouble sharedDouble] deployKickstands];
+    [[DRDouble sharedDouble] deployKickstands];
 }
 
 - (IBAction)startTravelData:(id)sender {
-	[[DRDouble sharedDouble] startTravelData];
+    [[DRDouble sharedDouble] startTravelData];
 }
 
 - (IBAction)stopTravelData:(id)sender {
-	[[DRDouble sharedDouble] stopTravelData];
+    [[DRDouble sharedDouble] stopTravelData];
 }
 
 - (IBAction)headPowerOn:(id)sender {
-	[[DRDouble sharedDouble] headPowerOn];
+    [[DRDouble sharedDouble] headPowerOn];
 }
 
 - (IBAction)headPowerOff:(id)sender {
-	[[DRDouble sharedDouble] headPowerOff];
+    [[DRDouble sharedDouble] headPowerOff];
 }
 
 - (IBAction)startAutoMode:(id)sender {
-    // Retract the kickstands before moving
     if (self.theDouble.kickstandState == 1) {
-        // Retract the kickstands
         [self.theDouble retractKickstands];
     }
     
     autostatus = YES;
     
-    // Set the desired distance for forward movement (in inches)
     float desiredDistance = 32.0;
-    
-    // Calculate the duration based on a constant speed (adjust as needed)
-    float constantSpeed = 12;  // Adjust the speed value as desired (in inches per second)
+    float constantSpeed = 12;
     NSTimeInterval duration = desiredDistance / constantSpeed;
     
-    // Start the forward movement
     [self.theDouble drive:kDRDriveDirectionForward turn:0.0];
     
-    // Schedule a timer to stop the forward movement after the desired duration
     NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:duration target:self selector:@selector(stopMovingForward:) userInfo:@{@"duration": @(duration)} repeats:YES];
     
-    // Print the timer countdown
     [self printTimerCountdown:timer];
 }
-
 
 - (IBAction)stopAutoMode:(id)sender {
     [self.theDouble drive:kDRDriveDirectionStop turn:0.0];
@@ -174,7 +204,7 @@ bool autostatus = NO;
 
 - (void)stopMovingForward:(NSTimer *)timer {
     [self.theDouble drive:kDRDriveDirectionStop turn:0.0];
-    [timer invalidate]; // Stop the timer
+    [timer invalidate];
     autostatus = NO;
 }
 
@@ -185,26 +215,26 @@ bool autostatus = NO;
 }
 
 - (void)doubleDidConnect:(DRDouble *)theDouble {
-	statusLabel.text = @"Connected";
+    statusLabel.text = @"Connected";
 }
 
 - (void)doubleDidDisconnect:(DRDouble *)theDouble {
-	statusLabel.text = @"Not Connected";
+    statusLabel.text = @"Not Connected";
 }
 
 - (void)doubleStatusDidUpdate:(DRDouble *)theDouble {
-	poleHeightPercentLabel.text = [NSString stringWithFormat:@"%f", [DRDouble sharedDouble].poleHeightPercent];
-	kickstandStateLabel.text = [NSString stringWithFormat:@"%d", [DRDouble sharedDouble].kickstandState];
-	batteryPercentLabel.text = [NSString stringWithFormat:@"%f", [DRDouble sharedDouble].batteryPercent];
-	batteryIsFullyChargedLabel.text = [NSString stringWithFormat:@"%d", [DRDouble sharedDouble].batteryIsFullyCharged];
-	firmwareVersionLabel.text = [DRDouble sharedDouble].firmwareVersion;
-	serialLabel.text = [DRDouble sharedDouble].serial;
+    poleHeightPercentLabel.text = [NSString stringWithFormat:@"%f", [DRDouble sharedDouble].poleHeightPercent];
+    kickstandStateLabel.text = [NSString stringWithFormat:@"%d", [DRDouble sharedDouble].kickstandState];
+    batteryPercentLabel.text = [NSString stringWithFormat:@"%f", [DRDouble sharedDouble].batteryPercent];
+    batteryIsFullyChargedLabel.text = [NSString stringWithFormat:@"%d", [DRDouble sharedDouble].batteryIsFullyCharged];
+    firmwareVersionLabel.text = [DRDouble sharedDouble].firmwareVersion;
+    serialLabel.text = [DRDouble sharedDouble].serial;
 }
 
 //- (void)doubleDriveShouldUpdate:(DRDouble *)theDouble {
-//	float drive = (driveForwardButton.highlighted) ? kDRDriveDirectionForward : ((driveBackwardButton.highlighted) ? kDRDriveDirectionBackward : kDRDriveDirectionStop);
-//	float turn = (driveRightButton.highlighted) ? 1.0 : ((driveLeftButton.highlighted) ? -1.0 : 0.0);
-//	[theDouble drive:drive turn:turn];
+//    float drive = (driveForwardButton.highlighted) ? kDRDriveDirectionForward : ((driveBackwardButton.highlighted) ? kDRDriveDirectionBackward : kDRDriveDirectionStop);
+//    float turn = (driveRightButton.highlighted) ? 1.0 : ((driveLeftButton.highlighted) ? -1.0 : 0.0);
+//    [theDouble drive:drive turn:turn];
 //}
 
 - (void)doubleDriveShouldUpdate:(DRDouble *)theDouble {
@@ -240,9 +270,9 @@ bool autostatus = NO;
 
 
 //- (void)doubleTravelDataDidUpdate:(DRDouble *)theDouble {
-//	leftEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].leftEncoderDeltaInches];
-//	rightEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].rightEncoderDeltaInches];
-//	NSLog(@"Left Encoder: %f, Right Encoder: %f", theDouble.leftEncoderDeltaInches, theDouble.rightEncoderDeltaInches);
+//    leftEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].leftEncoderDeltaInches];
+//    rightEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].rightEncoderDeltaInches];
+//    NSLog(@"Left Encoder: %f, Right Encoder: %f", theDouble.leftEncoderDeltaInches, theDouble.rightEncoderDeltaInches);
 //}
 
 - (void)doubleTravelDataDidUpdate:(DRDouble *)theDouble {
@@ -263,36 +293,54 @@ bool autostatus = NO;
 }
 
 - (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    // Get the video frame as a UIImage
     UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
-    
-    // Update the cameraImageView with the captured image
-    cameraView.image = image;
+    [self performObjectDetectionOnImage:image];
 }
 
 - (UIImage *)imageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer {
-    // Get the CVImageBuffer from the sample buffer
     CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-    
-    // Create a CIImage from the image buffer
     CIImage *ciImage = [CIImage imageWithCVImageBuffer:imageBuffer];
-    
-    // Create a CIContext
     CIContext *context = [[CIContext alloc] initWithOptions:nil];
-    
-    // Convert CIImage to CGImage
     CGImageRef cgImage = [context createCGImage:ciImage fromRect:CGRectMake(0, 0, CVPixelBufferGetWidth(imageBuffer), CVPixelBufferGetHeight(imageBuffer))];
-    
-    // Create a UIImage from the CGImage
     UIImage *image = [UIImage imageWithCGImage:cgImage];
-    
-    // Rotate the image by 90 degrees clockwise
-    UIImage *rotatedImage = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationRight];
-    
-    // Release the CGImage
     CGImageRelease(cgImage);
+    return image;
+}
+
+- (void)performObjectDetectionOnImage:(UIImage *)image {
+    VNImageRequestHandler *requestHandler = [[VNImageRequestHandler alloc] initWithCGImage:image.CGImage options:@{}];
+    NSError *error;
+    [requestHandler performRequests:@[self.objectDetectionRequest] error:&error];
+    if (error) {
+        NSLog(@"Error performing object detection request: %@", error);
+    }
+}
+
+- (void)handleObjectDetectionResults:(NSArray<VNClassificationObservation *> *)results {
+    NSTimeInterval currentTimestamp = [[NSDate date] timeIntervalSince1970];
+    NSTimeInterval timeSinceLastClassification = currentTimestamp - self.lastClassificationTimestamp;
     
-    return rotatedImage;
+    // Adjust the classification frequency by changing the throttle interval (in seconds)
+    NSTimeInterval throttleInterval = 1.0; // Set the desired interval between classifications
+    
+    if (timeSinceLastClassification >= throttleInterval) {
+        // Perform the classification since the throttle interval has passed
+        self.lastClassificationTimestamp = currentTimestamp;
+        
+        NSLog(@"Object detection results received: %lu", (unsigned long)results.count);
+        
+        if (results.count > 0) {
+            VNClassificationObservation *observation = results.firstObject;
+            NSString *className = observation.identifier;
+            CGFloat confidence = observation.confidence;
+            NSString *classificationText = [NSString stringWithFormat:@"%@ (%.2f)", className, confidence];
+            
+            NSLog(classificationText);
+            
+            // Update the classification label on the storyboard
+            classificationLabel.text = classificationText;
+        }
+    }
 }
 
 @end

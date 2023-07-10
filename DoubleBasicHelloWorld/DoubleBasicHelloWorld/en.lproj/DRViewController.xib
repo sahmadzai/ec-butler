@@ -11,12 +11,13 @@
             <connections>
                 <outlet property="batteryIsFullyChargedLabel" destination="116" id="122"/>
                 <outlet property="batteryPercentLabel" destination="114" id="121"/>
+                <outlet property="classificationLabel" destination="S79-to-aps" id="K2B-v3-SAJ"/>
                 <outlet property="driveBackwardButton" destination="94" id="127"/>
                 <outlet property="driveForwardButton" destination="92" id="126"/>
                 <outlet property="driveLeftButton" destination="93" id="128"/>
                 <outlet property="driveRightButton" destination="98" id="129"/>
                 <outlet property="firmwareVersionLabel" destination="118" id="123"/>
-                <outlet property="imageView" destination="jpH-uH-ykc" id="9wJ-uw-pqJ"/>
+                <outlet property="imageView" destination="jpH-uH-ykc" id="tOO-IR-67f"/>
                 <outlet property="kickstandStateLabel" destination="112" id="120"/>
                 <outlet property="leftEncoderLabel" destination="133" id="137"/>
                 <outlet property="poleHeightPercentLabel" destination="110" id="119"/>
@@ -31,6 +32,10 @@
             <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jpH-uH-ykc">
+                    <rect key="frame" x="388" y="34" width="333" height="465"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                     <rect key="frame" x="132" y="568" width="100" height="81"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -296,6 +301,13 @@
                     <color key="textColor" systemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="classification" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="93z-88-uFo">
+                    <rect key="frame" x="11" y="390" width="227" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" systemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="-" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="135">
                     <rect key="frame" x="261" y="361" width="76" height="21"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -346,14 +358,17 @@
                         <action selector="stopAutoMode:" destination="-1" eventType="touchUpInside" id="p74-BC-bYR"/>
                     </connections>
                 </button>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jpH-uH-ykc">
-                    <rect key="frame" x="388" y="34" width="333" height="465"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="Not Connected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="67">
                     <rect key="frame" x="11" y="34" width="289" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                    <color key="textColor" systemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" fixedFrame="YES" text="-" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S79-to-aps">
+                    <rect key="frame" x="261" y="389" width="76" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <color key="textColor" systemColor="darkTextColor"/>
                     <nil key="highlightedColor"/>
                 </label>
