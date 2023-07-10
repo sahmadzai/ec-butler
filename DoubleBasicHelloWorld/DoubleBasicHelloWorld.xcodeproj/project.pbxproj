@@ -20,6 +20,10 @@
 		022C411F17AE279C00385168 /* DRViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 022C411D17AE279C00385168 /* DRViewController.xib */; };
 		022C414F17AFA67700385168 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 022C414E17AFA67700385168 /* ExternalAccessory.framework */; };
 		4081B6472A5A1892003B2997 /* DoubleControlSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02EF8F6E18F9A8FC00916E15 /* DoubleControlSDK.framework */; };
+		4081B64C2A5A5EF3003B2997 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B64B2A5A5EF3003B2997 /* AVFoundation.framework */; };
+		4081B64E2A5A61CB003B2997 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B64D2A5A61CB003B2997 /* CoreVideo.framework */; };
+		4081B6502A5A61E2003B2997 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B64F2A5A61E2003B2997 /* CoreMedia.framework */; };
+		4081B6522A5A620F003B2997 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B6512A5A620F003B2997 /* CoreImage.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +45,10 @@
 		022C411E17AE279C00385168 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DRViewController.xib; sourceTree = "<group>"; };
 		022C414E17AFA67700385168 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		02EF8F6E18F9A8FC00916E15 /* DoubleControlSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DoubleControlSDK.framework; sourceTree = "<group>"; };
+		4081B64B2A5A5EF3003B2997 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		4081B64D2A5A61CB003B2997 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		4081B64F2A5A61E2003B2997 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		4081B6512A5A620F003B2997 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +56,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4081B6522A5A620F003B2997 /* CoreImage.framework in Frameworks */,
+				4081B6502A5A61E2003B2997 /* CoreMedia.framework in Frameworks */,
+				4081B64E2A5A61CB003B2997 /* CoreVideo.framework in Frameworks */,
+				4081B64C2A5A5EF3003B2997 /* AVFoundation.framework in Frameworks */,
 				4081B6472A5A1892003B2997 /* DoubleControlSDK.framework in Frameworks */,
 				022C414F17AFA67700385168 /* ExternalAccessory.framework in Frameworks */,
 				022C410317AE279C00385168 /* UIKit.framework in Frameworks */,
@@ -79,6 +91,10 @@
 		022C410117AE279C00385168 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4081B6512A5A620F003B2997 /* CoreImage.framework */,
+				4081B64F2A5A61E2003B2997 /* CoreMedia.framework */,
+				4081B64D2A5A61CB003B2997 /* CoreVideo.framework */,
+				4081B64B2A5A5EF3003B2997 /* AVFoundation.framework */,
 				02EF8F6E18F9A8FC00916E15 /* DoubleControlSDK.framework */,
 				022C414E17AFA67700385168 /* ExternalAccessory.framework */,
 				022C410217AE279C00385168 /* UIKit.framework */,
@@ -322,6 +338,7 @@
 					"\"$(SRCROOT)/..\"",
 					"$(PROJECT_DIR)/**",
 					"$(PROJECT_DIR)/DoubleControlSDK.framework/**",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DoubleBasicHelloWorld/DoubleBasicHelloWorld-Prefix.pch";
@@ -342,6 +359,7 @@
 					"\"$(SRCROOT)/..\"",
 					"$(PROJECT_DIR)/**",
 					"$(PROJECT_DIR)/DoubleControlSDK.framework/**",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DoubleBasicHelloWorld/DoubleBasicHelloWorld-Prefix.pch";

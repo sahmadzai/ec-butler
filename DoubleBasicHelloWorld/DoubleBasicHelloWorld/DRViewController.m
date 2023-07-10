@@ -8,12 +8,23 @@
 
 #import "DRViewController.h"
 #import <DoubleControlSDK/DoubleControlSDK.h>
+#import <AVFoundation/AVFoundation.h>
+#import <CoreMedia/CoreMedia.h>
 
-@interface DRViewController () <DRDoubleDelegate>
+@interface DRViewController () <DRDoubleDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
 @property (nonatomic, strong) DRDouble *theDouble;
+// Instance variables for filtered encoder values
+@property (nonatomic, assign) CGFloat filteredLeftEncoder;
+@property (nonatomic, assign) CGFloat filteredRightEncoder;
+@property (nonatomic, strong) AVCaptureSession *captureSession;
+@property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
 @end
 
 @implementation DRViewController
+
+// Constants for filter adjustment (tweak as needed)
+static const CGFloat kFilterFactor = 0.8;
+static const CGFloat kInitialEncoderValue = 0.0;
 
 bool autostatus = NO;
 
@@ -21,7 +32,60 @@ bool autostatus = NO;
 	[super viewDidLoad];
     self.theDouble = [DRDouble sharedDouble];
     self.theDouble.delegate = self;
+    [self startCameraCapture];
+    
+    self.filteredLeftEncoder = kInitialEncoderValue;
+    self.filteredRightEncoder = kInitialEncoderValue;
 	NSLog(@"SDK Version: %@", kDoubleBasicSDKVersion);
+}
+
+- (void)startCameraCapture {
+    // Create an AVCaptureSession
+    self.captureSession = [[AVCaptureSession alloc] init];
+    
+    // Configure the session for high-quality video output
+    self.captureSession.sessionPreset = AVCaptureSessionPresetHigh;
+    
+    // Find the appropriate AVCaptureDevice for video
+    AVCaptureDeviceDiscoverySession *discoverySession = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera]
+                                                                                                              mediaType:AVMediaTypeVideo
+                                                                                                               position:AVCaptureDevicePositionFront];
+    NSArray *devices = discoverySession.devices;
+    
+    if (devices.count > 0) {
+        AVCaptureDevice *videoDevice = devices.firstObject;
+        
+        NSError *error;
+        AVCaptureDeviceInput *videoInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
+        
+        if (!error) {
+            if ([self.captureSession canAddInput:videoInput]) {
+                // Add the video input to the session
+                [self.captureSession addInput:videoInput];
+                
+                // Create an AVCaptureVideoDataOutput to receive video frames
+                AVCaptureVideoDataOutput *videoOutput = [[AVCaptureVideoDataOutput alloc] init];
+                [videoOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+                
+                if ([self.captureSession canAddOutput:videoOutput]) {
+                    // Add the video output to the session
+                    [self.captureSession addOutput:videoOutput];
+                    
+                    // Create a UIImageView to display the camera feed
+                    cameraView = [[UIImageView alloc] initWithFrame:imageView.bounds];
+                    cameraView.contentMode = UIViewContentModeScaleAspectFit;
+                    [imageView addSubview:cameraView]; // Replace "imageView" with the actual IBOutlet name of your image view
+                    
+                    // Start the capture session
+                    [self.captureSession startRunning];
+                }
+            }
+        } else {
+            NSLog(@"Error creating video input: %@", error.localizedDescription);
+        }
+    } else {
+        NSLog(@"Front video device not found");
+    }
 }
 
 //- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
@@ -87,7 +151,7 @@ bool autostatus = NO;
     float desiredDistance = 32.0;
     
     // Calculate the duration based on a constant speed (adjust as needed)
-    float constantSpeed = 2.0;  // Adjust the speed value as desired (in inches per second)
+    float constantSpeed = 12;  // Adjust the speed value as desired (in inches per second)
     NSTimeInterval duration = desiredDistance / constantSpeed;
     
     // Start the forward movement
@@ -175,10 +239,60 @@ bool autostatus = NO;
 }
 
 
+//- (void)doubleTravelDataDidUpdate:(DRDouble *)theDouble {
+//	leftEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].leftEncoderDeltaInches];
+//	rightEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].rightEncoderDeltaInches];
+//	NSLog(@"Left Encoder: %f, Right Encoder: %f", theDouble.leftEncoderDeltaInches, theDouble.rightEncoderDeltaInches);
+//}
+
 - (void)doubleTravelDataDidUpdate:(DRDouble *)theDouble {
-	leftEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].leftEncoderDeltaInches];
-	rightEncoderLabel.text = [NSString stringWithFormat:@"%.02f", [DRDouble sharedDouble].rightEncoderDeltaInches];
-	NSLog(@"Left Encoder: %f, Right Encoder: %f", theDouble.leftEncoderDeltaInches, theDouble.rightEncoderDeltaInches);
+    // Update the raw encoder values
+    CGFloat rawLeftEncoder = theDouble.leftEncoderDeltaInches;
+    CGFloat rawRightEncoder = theDouble.rightEncoderDeltaInches;
+
+    // Apply a low-pass filter to smooth the encoder values
+    self.filteredLeftEncoder = (kFilterFactor * rawLeftEncoder) + ((1.0 - kFilterFactor) * self.filteredLeftEncoder);
+    self.filteredRightEncoder = (kFilterFactor * rawRightEncoder) + ((1.0 - kFilterFactor) * self.filteredRightEncoder);
+
+    // Update the displayed encoder labels with the filtered values
+    leftEncoderLabel.text = [NSString stringWithFormat:@"%.02f", self.filteredLeftEncoder];
+    rightEncoderLabel.text = [NSString stringWithFormat:@"%.02f", self.filteredRightEncoder];
+
+    // Log the filtered encoder values for debugging
+    NSLog(@"Filtered Left Encoder: %.02f, Filtered Right Encoder: %.02f", self.filteredLeftEncoder, self.filteredRightEncoder);
+}
+
+- (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    // Get the video frame as a UIImage
+    UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+    
+    // Update the cameraImageView with the captured image
+    cameraView.image = image;
+}
+
+- (UIImage *)imageFromSampleBuffer:(CMSampleBufferRef)sampleBuffer {
+    // Get the CVImageBuffer from the sample buffer
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    
+    // Create a CIImage from the image buffer
+    CIImage *ciImage = [CIImage imageWithCVImageBuffer:imageBuffer];
+    
+    // Create a CIContext
+    CIContext *context = [[CIContext alloc] initWithOptions:nil];
+    
+    // Convert CIImage to CGImage
+    CGImageRef cgImage = [context createCGImage:ciImage fromRect:CGRectMake(0, 0, CVPixelBufferGetWidth(imageBuffer), CVPixelBufferGetHeight(imageBuffer))];
+    
+    // Create a UIImage from the CGImage
+    UIImage *image = [UIImage imageWithCGImage:cgImage];
+    
+    // Rotate the image by 90 degrees clockwise
+    UIImage *rotatedImage = [UIImage imageWithCGImage:image.CGImage scale:image.scale orientation:UIImageOrientationRight];
+    
+    // Release the CGImage
+    CGImageRelease(cgImage);
+    
+    return rotatedImage;
 }
 
 @end

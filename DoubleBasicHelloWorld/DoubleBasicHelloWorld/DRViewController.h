@@ -22,6 +22,8 @@
 	IBOutlet UIButton *driveBackwardButton;
 	IBOutlet UIButton *driveLeftButton;
 	IBOutlet UIButton *driveRightButton;
+    IBOutlet UIImageView *imageView;
+    IBOutlet UIImageView *cameraView;
 }
 
 @end
