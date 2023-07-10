@@ -148,11 +148,11 @@
 			};
 			buildConfigurationList = 022C40FA17AE279C00385168 /* Build configuration list for PBXProject "DoubleBasicHelloWorld" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 022C40F617AE279C00385168;
 			productRefGroup = 022C410017AE279C00385168 /* Products */;

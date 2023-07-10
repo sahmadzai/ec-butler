@@ -9,6 +9,6 @@
 #ifndef Double_Basic_Example_DoubleBasicSDK_h
 #define Double_Basic_Example_DoubleBasicSDK_h
 
-#import "DRDouble.h"
+#import <DoubleControlSDK/DRDouble.h>
 
 #endif
