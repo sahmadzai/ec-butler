@@ -21,13 +21,10 @@
 		022C414F17AFA67700385168 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 022C414E17AFA67700385168 /* ExternalAccessory.framework */; };
 		4081B6472A5A1892003B2997 /* DoubleControlSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 02EF8F6E18F9A8FC00916E15 /* DoubleControlSDK.framework */; };
 		4081B64C2A5A5EF3003B2997 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B64B2A5A5EF3003B2997 /* AVFoundation.framework */; };
-		4081B64E2A5A61CB003B2997 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B64D2A5A61CB003B2997 /* CoreVideo.framework */; };
-		4081B6502A5A61E2003B2997 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B64F2A5A61E2003B2997 /* CoreMedia.framework */; };
-		4081B6522A5A620F003B2997 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B6512A5A620F003B2997 /* CoreImage.framework */; };
-		4081B65A2A5BA58B003B2997 /* CoreML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B6592A5BA58B003B2997 /* CoreML.framework */; };
 		4081B65C2A5BA599003B2997 /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4081B65B2A5BA599003B2997 /* Vision.framework */; };
-		4081B66A2A5C26E0003B2997 /* placeholder_image.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 4081B6692A5C26E0003B2997 /* placeholder_image.jpeg */; };
-		4081B67A2A5CC10D003B2997 /* MobileNetV2FP16.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4081B6792A5CC10C003B2997 /* MobileNetV2FP16.mlmodel */; };
+		40F86FA52A5DF1AC00DD6389 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40F86FA42A5DF1AC00DD6389 /* AssetsLibrary.framework */; };
+		40F86FAE2A5DF33100DD6389 /* EC-Floorplan Map.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 40F86FAD2A5DF33100DD6389 /* EC-Floorplan Map.jpg */; };
+		40F86FC02A5E06D200DD6389 /* CoreML.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 40F86FBF2A5E06D200DD6389 /* CoreML.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,18 +42,16 @@
 		022C411617AE279C00385168 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		022C411817AE279C00385168 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		022C411A17AE279C00385168 /* DRViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DRViewController.h; sourceTree = "<group>"; };
-		022C411B17AE279C00385168 /* DRViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DRViewController.m; sourceTree = "<group>"; };
+		022C411B17AE279C00385168 /* DRViewController.m */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.objc; path = DRViewController.m; sourceTree = "<group>"; };
 		022C411E17AE279C00385168 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DRViewController.xib; sourceTree = "<group>"; };
 		022C414E17AFA67700385168 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		02EF8F6E18F9A8FC00916E15 /* DoubleControlSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DoubleControlSDK.framework; sourceTree = "<group>"; };
 		4081B64B2A5A5EF3003B2997 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		4081B64D2A5A61CB003B2997 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
-		4081B64F2A5A61E2003B2997 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		4081B6512A5A620F003B2997 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
-		4081B6592A5BA58B003B2997 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
 		4081B65B2A5BA599003B2997 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
-		4081B6692A5C26E0003B2997 /* placeholder_image.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = placeholder_image.jpeg; sourceTree = "<group>"; };
-		4081B6792A5CC10C003B2997 /* MobileNetV2FP16.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2FP16.mlmodel; sourceTree = "<group>"; };
+		40F86FA42A5DF1AC00DD6389 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		40F86FAD2A5DF33100DD6389 /* EC-Floorplan Map.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "EC-Floorplan Map.jpg"; sourceTree = "<group>"; };
+		40F86FBB2A5DFBE700DD6389 /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		40F86FBF2A5E06D200DD6389 /* CoreML.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreML.framework; path = System/Library/Frameworks/CoreML.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,11 +59,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40F86FC02A5E06D200DD6389 /* CoreML.framework in Frameworks */,
+				40F86FA52A5DF1AC00DD6389 /* AssetsLibrary.framework in Frameworks */,
 				4081B65C2A5BA599003B2997 /* Vision.framework in Frameworks */,
-				4081B65A2A5BA58B003B2997 /* CoreML.framework in Frameworks */,
-				4081B6522A5A620F003B2997 /* CoreImage.framework in Frameworks */,
-				4081B6502A5A61E2003B2997 /* CoreMedia.framework in Frameworks */,
-				4081B64E2A5A61CB003B2997 /* CoreVideo.framework in Frameworks */,
 				4081B64C2A5A5EF3003B2997 /* AVFoundation.framework in Frameworks */,
 				4081B6472A5A1892003B2997 /* DoubleControlSDK.framework in Frameworks */,
 				022C414F17AFA67700385168 /* ExternalAccessory.framework in Frameworks */,
@@ -101,11 +94,9 @@
 		022C410117AE279C00385168 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				40F86FBF2A5E06D200DD6389 /* CoreML.framework */,
+				40F86FA42A5DF1AC00DD6389 /* AssetsLibrary.framework */,
 				4081B65B2A5BA599003B2997 /* Vision.framework */,
-				4081B6592A5BA58B003B2997 /* CoreML.framework */,
-				4081B6512A5A620F003B2997 /* CoreImage.framework */,
-				4081B64F2A5A61E2003B2997 /* CoreMedia.framework */,
-				4081B64D2A5A61CB003B2997 /* CoreVideo.framework */,
 				4081B64B2A5A5EF3003B2997 /* AVFoundation.framework */,
 				02EF8F6E18F9A8FC00916E15 /* DoubleControlSDK.framework */,
 				022C414E17AFA67700385168 /* ExternalAccessory.framework */,
@@ -119,13 +110,13 @@
 		022C410817AE279C00385168 /* DoubleBasicHelloWorld */ = {
 			isa = PBXGroup;
 			children = (
-				4081B6792A5CC10C003B2997 /* MobileNetV2FP16.mlmodel */,
 				022C411117AE279C00385168 /* DRAppDelegate.h */,
 				022C411217AE279C00385168 /* DRAppDelegate.m */,
 				022C411A17AE279C00385168 /* DRViewController.h */,
 				022C411B17AE279C00385168 /* DRViewController.m */,
 				022C411D17AE279C00385168 /* DRViewController.xib */,
 				022C410917AE279C00385168 /* Supporting Files */,
+				40F86FBB2A5DFBE700DD6389 /* PrefixHeader.pch */,
 			);
 			path = DoubleBasicHelloWorld;
 			sourceTree = "<group>";
@@ -133,7 +124,7 @@
 		022C410917AE279C00385168 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				4081B6692A5C26E0003B2997 /* placeholder_image.jpeg */,
+				40F86FAD2A5DF33100DD6389 /* EC-Floorplan Map.jpg */,
 				022C410A17AE279C00385168 /* DoubleBasicHelloWorld-Info.plist */,
 				022C410B17AE279C00385168 /* InfoPlist.strings */,
 				022C410E17AE279C00385168 /* main.m */,
@@ -202,7 +193,7 @@
 				022C410D17AE279C00385168 /* InfoPlist.strings in Resources */,
 				022C411517AE279C00385168 /* Default.png in Resources */,
 				022C411717AE279C00385168 /* Default@2x.png in Resources */,
-				4081B66A2A5C26E0003B2997 /* placeholder_image.jpeg in Resources */,
+				40F86FAE2A5DF33100DD6389 /* EC-Floorplan Map.jpg in Resources */,
 				022C411917AE279C00385168 /* Default-568h@2x.png in Resources */,
 				022C411F17AE279C00385168 /* DRViewController.xib in Resources */,
 			);
@@ -218,7 +209,6 @@
 				022C410F17AE279C00385168 /* main.m in Sources */,
 				022C411317AE279C00385168 /* DRAppDelegate.m in Sources */,
 				022C411C17AE279C00385168 /* DRViewController.m in Sources */,
-				4081B67A2A5CC10D003B2997 /* MobileNetV2FP16.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,7 +239,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				"CLANG_CXX_LANGUAGE_STANDARD[arch=*]" = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -275,7 +266,7 @@
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -303,7 +294,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
@@ -328,7 +319,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -357,7 +348,7 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DoubleBasicHelloWorld/DoubleBasicHelloWorld-Prefix.pch";
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/DoubleBasicHelloWorld/PrefixHeader.pch";
 				INFOPLIST_FILE = "DoubleBasicHelloWorld/DoubleBasicHelloWorld-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.doublerobotics.${PRODUCT_NAME:rfc1034identifier}";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "com.doublerobotics.EC-Butler";
@@ -378,7 +369,7 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "DoubleBasicHelloWorld/DoubleBasicHelloWorld-Prefix.pch";
+				GCC_PREFIX_HEADER = "$(PROJECT_DIR)/DoubleBasicHelloWorld/PrefixHeader.pch";
 				INFOPLIST_FILE = "DoubleBasicHelloWorld/DoubleBasicHelloWorld-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.doublerobotics.${PRODUCT_NAME:rfc1034identifier}";
 				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = "com.doublerobotics.EC-Butler";

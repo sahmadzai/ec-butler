@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class OccupancyMapView;
+
 @interface DRViewController : UIViewController {
 	IBOutlet UILabel *statusLabel;
 	IBOutlet UILabel *poleHeightPercentLabel;
@@ -15,15 +17,16 @@
 	IBOutlet UILabel *batteryPercentLabel;
 	IBOutlet UILabel *batteryIsFullyChargedLabel;
 	IBOutlet UILabel *firmwareVersionLabel;
-	IBOutlet UILabel *serialLabel;
+	IBOutlet UILabel *distance;
 	IBOutlet UILabel *leftEncoderLabel;
 	IBOutlet UILabel *rightEncoderLabel;
-    IBOutlet UILabel *classificationLabel;
+    IBOutlet UILabel *roundNum;
 	IBOutlet UIButton *driveForwardButton;
 	IBOutlet UIButton *driveBackwardButton;
 	IBOutlet UIButton *driveLeftButton;
 	IBOutlet UIButton *driveRightButton;
     IBOutlet UIImageView *imageView;
+    IBOutlet UIImageView *mapView;
 }
 
 @end
